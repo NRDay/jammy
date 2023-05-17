@@ -35,8 +35,7 @@ export const authorizeUser = async (req: NextApiRequest) => {
 
 export const fetcher = async (url: string) => {
   const token = authorizeAdmin()
-
-  return fetch(process.env.NEXT_PUBLIC_WP_API_URL + url, {
+  let response = await fetch(process.env.NEXT_PUBLIC_WP_API_URL + url, {
     headers: {
       Authorization: `Bearer ${token}`,
 
@@ -45,6 +44,7 @@ export const fetcher = async (url: string) => {
     credentials: 'include',
     mode: 'cors',
   })
+  return response
 }
 
 export const poster = async (url: string, data: object, method: string) => {

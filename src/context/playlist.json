@@ -1,0 +1,63 @@
+import React, { useState, useEffect } from 'react'
+import { Playlist } from '../types'
+import { getPlaylist, initPlaylist } from '../utils/functions'
+import { useSession } from 'next-auth/client'
+
+export const PlaylistContext = React.createContext<any | null>(null)
+
+interface PlaylistProviderProps {}
+
+const PlaylistProvider: React.FC<PlaylistProviderProps> = ({ children }) => {
+  const [playlist, setPlaylist] = useState<Playlist>({ items: [], key: '', timestamp: 0 })
+  const [isUpdating, setIsUpdating] = useState(false)
+  const [session]: any = useSession()
+
+  //to change playlist expiration date on server
+  //https://github.com/co-playlist/co-playlist/search?q=coplaylist_playlist_expiring+in%3Afile&type=Code
+  //however you still need to expire your local playlist so the playlists don't get out of sync
+
+  const expireIn = 259200000 //3 days example
+
+  const createGuestPlaylist = async () => {
+    setIsUpdating(true)
+    const newPlaylist = await initPlaylist()
+    setPlaylist(newPlaylist)
+    setIsUpdating(false)
+  }
+
+  const checkForLocalPlaylist = (expirity: number) => {
+    const playlistFromLocalStorage = localStorage.getItem('local_playlist')
+    if (
+      !playlistFromLocalStorage ||
+      new Date().getTime() - JSON.parse(playlistFromLocalStorage).timestamp > expirity ||
+      !JSON.parse(playlistFromLocalStorage).key ||
+      JSON.parse(playlistFromLocalStorage).items.length === 0
+    ) {
+      return null
+    } else {
+      return JSON.parse(playlistFromLocalStorage)
+    }
+  }
+
+  useEffect(() => {
+    if (isUpdating) return
+    const localPlaylist = checkForLocalPlaylist(expireIn)
+    if (localPlaylist) {
+      setPlaylist(localPlaylist)
+    } else {
+      createGuestPlaylist()
+    }
+  }, [session])
+
+  useEffect(() => {
+    localStorage.setItem('local_playlist', JSON.stringify(playlist))
+  }, [playlist])
+
+  return (
+    <PlaylistContext.Provider value={[playlist, setPlaylist, isUpdating, setIsUpdating]}>
+      {children}
+    </PlaylistContext.Provider>
+  )
+}
+
+export default PlaylistProvider

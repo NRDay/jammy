@@ -65,3 +65,20 @@ export interface Order {
   total: string
   date_created: string
 }
+
+export interface Track {
+  key?: string
+  product_id: number
+  product_price?: string
+  product_name?: string
+  image?: string
+  slug?: string
+  preiew_url?: string
+  preview_json?: string
+}
+
+export interface Playlist {
+  key: string | null
+  timestamp: number
+  items: Track[]
+}

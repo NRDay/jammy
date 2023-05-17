@@ -15,7 +15,7 @@ const ShopPage: NextPage<ShopPageProps> = ({ products }) => {
 export default ShopPage
 
 export async function getStaticProps() {
-  const res = await fetcher(`/wp-json/wc/v3/products?per_page=100&status=publish&type=simple`)
+  const res = await fetcher(`/wp-json/wc/v3/products?per_page=100&status=publish&itl_type=track`)
   //TODO: implement variable products
   const products = await res.json()
 

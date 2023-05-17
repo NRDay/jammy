@@ -87,7 +87,6 @@ const AuthForm: React.FC<AuthFormProps> = ({ isRegister }) => {
           name="username"
           ref={register({
             required: 'This field is required',
-            pattern: { value: /^[a-zA-Z0-9_.-]*$/, message: 'Special characters are not allowed.' },
           })}
         />
         {errors.username && <AuthFormStyles.Error>{errors.username.message}</AuthFormStyles.Error>}

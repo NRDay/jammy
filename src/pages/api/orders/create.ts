@@ -20,8 +20,12 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   if (!customer || !payment || !cart) return res.status(400).json({ message: 'Bad request' })
 
   try {
-    const line_items = cart.items
-    const { method_id, method_title, cost } = JSON.parse(customer.shipping!)
+    const line_items = cart.items.map(function (item) {
+      delete item.image
+      return item
+    })
+    // line_item_total - the sum of the product_price values in the cart
+    // const line_item_total = line_items.reduce((a, b) => a + (b['product_price'] || 0), 0);
 
     let user: any
     const session: any = await getSession({ req })
@@ -30,7 +34,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       user = jwt.verify(session.user.key, process.env.WP_JWT_AUTH_SECRET_KEY!)
     }
 
-    const total = jwt.verify(cost, process.env.NEXTAUTH_SECRET_KEY!)
+    //const total = jwt.verify(shipping.total, process.env.NEXTAUTH_SECRET_KEY!)
 
     const wooBody = {
       payment_method: `Credit Card`,
@@ -39,24 +43,12 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       billing: {
         ...customer,
       },
-      shipping: {
-        ...customer,
-      },
-      line_items,
+      line_items: line_items,
       customer_note: customer.customer_note,
       customer_id: user ? user.data.user.id : 0,
-      shipping_lines: [
-        {
-          method_id,
-          method_title,
-          total,
-        },
-      ],
     }
-
     const wooResponse = await poster(`/wp-json/wc/v3/orders`, wooBody, 'POST')
     const order = await wooResponse.json()
-
     const amount = Math.round(parseFloat(order.total) * 100)
 
     const paymentIntent = await stripe.paymentIntents.create({

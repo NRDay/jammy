@@ -18,24 +18,13 @@ const ProductPrice: FC<ProductPriceProps> = ({ product, center, size }) => {
     return <Loader />
   }
 
-  const { sale_price, regular_price } = getSingleProduct(product.id, data)
+  const { regular_price } = getSingleProduct(product.id, data)
 
   return (
     <ProductPriceStyles.Wrapper center={center}>
-      {!sale_price ? (
-        <ProductPriceStyles.Regular isOnSale={false} size={size}>
-          ${parseFloat(regular_price).toFixed(2)}
-        </ProductPriceStyles.Regular>
-      ) : (
-        <>
-          <ProductPriceStyles.Regular isOnSale={true} size={size}>
-            ${parseFloat(regular_price).toFixed(2)}
-          </ProductPriceStyles.Regular>
-          <ProductPriceStyles.Sale size={size}>
-            ${parseFloat(sale_price).toFixed(2)}
-          </ProductPriceStyles.Sale>
-        </>
-      )}
+      <ProductPriceStyles.Regular isOnSale={false} size={size}>
+        ${parseFloat(regular_price).toFixed(2)}
+      </ProductPriceStyles.Regular>
     </ProductPriceStyles.Wrapper>
   )
 }
