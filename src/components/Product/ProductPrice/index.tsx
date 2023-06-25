@@ -1,9 +1,6 @@
 import React, { FC } from 'react'
 import * as ProductPriceStyles from './styled'
-import useSwr from 'swr'
 import { Product } from '../../../types'
-import { Loader } from '../../../styles/utils'
-import { getSingleProduct } from '../../../utils/functions'
 
 interface ProductPriceProps {
   product: Product
@@ -12,13 +9,7 @@ interface ProductPriceProps {
 }
 
 const ProductPrice: FC<ProductPriceProps> = ({ product, center, size }) => {
-  const { data } = useSwr(`/api/products/retrieve`)
-
-  if (!data) {
-    return <Loader />
-  }
-
-  const { regular_price } = getSingleProduct(product.id, data)
+  const { regular_price } = product
 
   return (
     <ProductPriceStyles.Wrapper center={center}>

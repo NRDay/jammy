@@ -9,7 +9,15 @@ export interface Product {
     src: string
     alt: string
   }>
-
+  itl_track_audio: string
+  itl_track_data: {
+    wave_json: string
+    preview_times: {
+      start: string
+      duration: string
+      wavDuration: string
+    }
+  }
   price: string
   regular_price: string
   sale_price: string
@@ -28,13 +36,13 @@ export interface Category {
 }
 
 export interface CartItem {
-  key?: string
+  key: string
   product_id: number
   quantity: number
-  product_price?: string
-  product_name?: string
+  product_price: any
+  product_name: string
   image?: string
-  slug?: string
+  slug: string
   line_total?: number
 }
 
@@ -73,12 +81,31 @@ export interface Track {
   product_name?: string
   image?: string
   slug?: string
-  preiew_url?: string
-  preview_json?: string
+  audioUrl?: string
+  audioPeakData?: string
+  previewTimes?: PreviewTimes
 }
 
 export interface Playlist {
   key: string | null
   timestamp: number
   items: Track[]
+}
+
+export type PlayerProps = {
+  key?: string
+  product_id: number
+  product_price?: string
+  product_name?: string
+  image?: string
+  slug?: string
+  audioUrl?: string
+  audioPeakData?: string
+  previewTimes?: PreviewTimes
+}
+
+export type PreviewTimes = {
+  start: string
+  duration: string
+  wavDuration: string
 }

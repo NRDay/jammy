@@ -1,10 +1,16 @@
 import React from 'react'
 import * as FooterStyles from './styled'
+import NavigationIcons from '../NavIcons'
+import Player from '../Player'
+import Playlist from '../Playlist'
+
+import { PlayerProvider } from '../../context/player'
 
 const Footer = () => {
   return (
     <FooterStyles.Container>
-      <FooterStyles.Copyright>Made with Next.js by Paju Studios</FooterStyles.Copyright>
+      <Player />
+      <Playlist />
     </FooterStyles.Container>
   )
 }

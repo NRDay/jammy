@@ -1,9 +1,6 @@
 import React, { useContext } from 'react'
-import useSWR from 'swr'
 import { CartContext } from '../../../context/cart'
-import { Loader } from '../../../styles/utils'
 import { CartItem } from '../../../types'
-import { getSingleProduct } from '../../../utils/functions'
 import * as CartTotalStyles from './styled'
 
 interface CartTotalProps {
@@ -11,23 +8,16 @@ interface CartTotalProps {
 }
 
 const CartTotal: React.FC<CartTotalProps> = ({ adds }) => {
-  const { data } = useSWR('/api/products/retrieve')
   const [cart] = useContext(CartContext)
 
-  if (!data) {
-    return <Loader />
-  }
-
   const cartTotal = cart.items.reduce((acc: number, curr: CartItem) => {
-    const product = getSingleProduct(curr.product_id, data)
-    if (!product) return 0
-
-    return acc + curr.quantity * product.price
+    const productPrice = parseFloat(curr.product_price.replace(/[^\d.-]/g, ''))
+    return acc + curr.quantity * productPrice
   }, 0)
 
   return (
     <CartTotalStyles.Total>
-      ${adds && adds > 0 ? (adds + cartTotal).toFixed(2) : cartTotal.toFixed(2)}
+      £{adds && adds > 0 ? adds + cartTotal : cartTotal}
     </CartTotalStyles.Total>
   )
 }

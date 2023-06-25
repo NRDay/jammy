@@ -11,7 +11,7 @@ interface CartItemProps {
   price: number
 }
 
-const SingleCartItem: React.FC<CartItemProps> = ({ item, price }) => {
+const SingleCartItem: React.FC<CartItemProps> = ({ item }) => {
   const [cart, setCart, isUpdating, setIsUpdating] = useContext(CartContext)
   const [isRemoving, setIsRemoving] = useState(false)
   const [isAnimating, setIsAnimating] = useState(false)
@@ -82,9 +82,8 @@ const SingleCartItem: React.FC<CartItemProps> = ({ item, price }) => {
       setIsUpdating(false)
     }
   }
-
-  const itemTotal = price * item.quantity
-
+  const priceNumber = parseFloat(item.product_price.replace('£', ''))
+  const itemTotal = priceNumber * item.quantity
   return (
     <>
       <CartItemStyles.CartRow>
@@ -101,7 +100,7 @@ const SingleCartItem: React.FC<CartItemProps> = ({ item, price }) => {
             <CartItemStyles.ProductLink>{item.product_name}</CartItemStyles.ProductLink>
           </Link>
         </CartItemStyles.CartEl>
-        <CartItemStyles.CartEl>${price.toFixed(2)}</CartItemStyles.CartEl>
+        <CartItemStyles.CartEl>£{priceNumber}</CartItemStyles.CartEl>
         <CartItemStyles.CartEl>
           <CartItemStyles.QuantityForm>
             <CartItemStyles.InputField
@@ -126,7 +125,7 @@ const SingleCartItem: React.FC<CartItemProps> = ({ item, price }) => {
           </CartItemStyles.QuantityForm>
         </CartItemStyles.CartEl>
         <CartItemStyles.CartEl>
-          <CartItemStyles.ProductSubtotal>${itemTotal.toFixed(2)}</CartItemStyles.ProductSubtotal>
+          <CartItemStyles.ProductSubtotal>£{itemTotal.toFixed(2)}</CartItemStyles.ProductSubtotal>
         </CartItemStyles.CartEl>
       </CartItemStyles.CartRow>
     </>

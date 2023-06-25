@@ -6,6 +6,7 @@ import { SWRConfig } from 'swr'
 import GlobalStyle from '../styles/main'
 import Layout from '../containers/Main'
 import CartProvider from '../context/cart'
+import { PlayerProvider } from '../context/player'
 
 //node-fetch self signed cert fix for getStaticProps
 //https://stackoverflow.com/questions/10888610/ignore-invalid-self-signed-ssl-certificate-in-node-js-with-https-request/21961005#21961005
@@ -19,11 +20,13 @@ const CustomApp: React.FC<CustomAppProps> = ({ Component, pageProps }) => {
       <AuthProvider session={pageProps.session}>
         <ThemeProvider theme={theme}>
           <SWRConfig value={{ fetcher: (url: string) => fetch(url).then((r) => r.json()) }}>
-            <CartProvider>
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            </CartProvider>
+            <PlayerProvider>
+              <CartProvider>
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              </CartProvider>
+            </PlayerProvider>
           </SWRConfig>
           <GlobalStyle />
         </ThemeProvider>

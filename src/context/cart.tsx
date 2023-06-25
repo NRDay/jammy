@@ -18,20 +18,20 @@ const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
   const expireIn = 259200000 //3 days example
 
-  const createUserCart = async () => {
-    setIsUpdating(true)
-    const req = await fetch('/api/customers/retrieve')
-    const res = await req.json()
-    const cartKey = res.meta_data.find((x: { [key: string]: string }) => x.key === 'cart')
-    let newCart: Cart
-    if (cartKey) {
-      newCart = await getCart(cartKey.value)
-    } else {
-      newCart = await initCart()
-    }
-    setCart(newCart)
-    setIsUpdating(false)
-  }
+  // const createUserCart = async () => {
+  //   setIsUpdating(true)
+  //   const req = await fetch('/api/customers/retrieve')
+  //   const res = await req.json()
+  //   const cartKey = res.meta_data.find((x: { [key: string]: string }) => x.key === 'cart')
+  //   let newCart: Cart
+  //   if (cartKey) {
+  //     newCart = await getCart(cartKey.value)
+  //   } else {
+  //     newCart = await initCart()
+  //   }
+  //   setCart(newCart)
+  //   setIsUpdating(false)
+  // }
 
   const createGuestCart = async () => {
     setIsUpdating(true)
@@ -56,15 +56,12 @@ const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
   useEffect(() => {
     if (isUpdating) return
-    if (session) {
-      createUserCart()
+
+    const localCart = checkForLocalCart(expireIn)
+    if (localCart) {
+      setCart(localCart)
     } else {
-      const localCart = checkForLocalCart(expireIn)
-      if (localCart) {
-        setCart(localCart)
-      } else {
-        createGuestCart()
-      }
+      createGuestCart()
     }
   }, [session])
 

@@ -2,7 +2,6 @@ import React from 'react'
 import * as CartGridStyles from './styled'
 import SingleCartItem from '../../../components/Cart/CartItem'
 import { Cart, CartItem } from '../../../types'
-import { getSingleProduct } from '../../../utils/functions'
 
 interface CartGridProps {
   cart: Cart
@@ -29,10 +28,8 @@ const CartGrid: React.FC<CartGridProps> = ({ cart, data }) => {
         </CartGridStyles.FirstCol>
         <CartGridStyles.SecondCol>
           {cart.items.map((item: CartItem) => {
-            const product = getSingleProduct(item.product_id, data)
-            return (
-              <SingleCartItem key={item.product_id} item={item} price={parseFloat(product.price)} />
-            )
+            console.log('item product_price', item.product_price)
+            return <SingleCartItem key={item.product_id} item={item} price={item.product_price} />
           })}
         </CartGridStyles.SecondCol>
       </CartGridStyles.Wrapper>
